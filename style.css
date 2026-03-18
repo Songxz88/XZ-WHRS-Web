@@ -1,109 +1,65 @@
 body {
     margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: #0d1117;
-    color: #e6edf3;
+    font-family: "Segoe UI";
+    background: #f3f5f7;
 }
 
-/* 顶部 */
-.header {
-    padding: 15px;
-    text-align: center;
-    background: #161b22;
-    font-size: 20px;
-    border-bottom: 2px solid #f39c12;
-}
-
-/* 整体布局 */
-.layout {
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    height: calc(100vh - 60px);
-}
-
-/* 左侧控制 */
-.sidebar {
-    background: #161b22;
-    padding: 15px;
-    overflow-y: auto;
-}
-
-/* 右侧展示 */
-.main {
-    padding: 15px;
-}
-
-/* 模块卡片 */
-.section {
-    background: #1f2933;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
+/* 外层 */
+.container {
+    width: 90%;
+    margin: auto;
 }
 
 /* 标题 */
-.section h2 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
-    color: #f39c12;
+.title {
+    font-size: 26px;
+    font-weight: bold;
+    padding: 20px;
 }
 
-/* 输入组 */
-.input-group {
+/* 两列布局（核心🔥） */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* 卡片 */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* 行 */
+.row {
     display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
+    justify-content: space-between;
+    margin-bottom: 12px;
 }
 
-.input-group input {
-    flex: 1;
-    padding: 8px;
-    background: #0d1117;
-    border: 1px solid #30363d;
-    color: white;
-    border-radius: 5px;
+label {
+    color: #555;
+}
+
+input {
+    width: 150px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
 
 /* 按钮 */
-button {
-    width: 100%;
-    padding: 10px;
-    background: linear-gradient(90deg, #f39c12, #ffb74d);
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-button:hover {
-    opacity: 0.85;
-}
-
-/* 结果卡片 */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-
-.card {
-    background: #161b22;
-    padding: 12px;
-    border-radius: 8px;
+.actions {
     text-align: center;
-    border-left: 4px solid #f39c12;
+    margin: 20px;
 }
 
-.card .value {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 5px;
-}
-
-/* 图表区 */
-.chart-box {
-    background: #1f2933;
-    border-radius: 10px;
-    padding: 10px;
-    margin-top: 10px;
+button {
+    padding: 10px 25px;
+    background: #2f6df6;
+    color: white;
+    border: none;
+    border-radius: 8px;
 }
