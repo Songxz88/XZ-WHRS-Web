@@ -1,11 +1,11 @@
 function calculate() {
 
-    let T = parseFloat(T_input("T"));
-    let v = parseFloat(T_input("v"));
-    let D = parseFloat(T_input("D"));
-    let A = parseFloat(T_input("A"));
-    let L = parseFloat(T_input("L"));
-    let flow_area = parseFloat(T_input("flow_area"));
+    let T = parseFloat(get("T"));
+    let v = parseFloat(get("v"));
+    let D = parseFloat(get("D"));
+    let A = parseFloat(get("A"));
+    let L = parseFloat(get("L"));
+    let flow_area = parseFloat(get("flow_area"));
 
     let cp = 1000;
     let rho = 1.2 * (300 / T);
@@ -33,16 +33,19 @@ function calculate() {
     let eff = (Q_total - Wfan) / Q_total;
 
     document.getElementById("result").innerHTML = `
-        <div class="card">Re: ${Re.toFixed(0)}</div>
-        <div class="card">h: ${h.toFixed(2)} W/m²K</div>
-        <div class="card">Q: ${Q.toFixed(2)} W</div>
-        <div class="card">ΔP: ${dP.toFixed(2)} Pa</div>
-        <div class="card">Fan Power: ${Wfan.toFixed(2)} W</div>
-        <div class="card">Efficiency: ${eff.toFixed(3)}</div>
-        <div class="card">Condensation: ${cond}</div>
+        <div class="card"><div>Re</div><div class="value">${Re.toFixed(0)}</div></div>
+        <div class="card"><div>h (W/m²K)</div><div class="value">${h.toFixed(2)}</div></div>
+
+        <div class="card q"><div>Heat Q</div><div class="value">${Q.toFixed(0)} W</div></div>
+        <div class="card dp"><div>ΔP</div><div class="value">${dP.toFixed(2)} Pa</div></div>
+
+        <div class="card fan"><div>Fan Power</div><div class="value">${Wfan.toFixed(0)} W</div></div>
+        <div class="card eff"><div>Efficiency</div><div class="value">${eff.toFixed(3)}</div></div>
+
+        <div class="card"><div>Condensation</div><div class="value">${cond}</div></div>
     `;
 }
 
-function T_input(id){
+function get(id){
     return document.getElementById(id).value;
 }
