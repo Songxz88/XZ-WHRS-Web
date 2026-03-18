@@ -58,3 +58,12 @@ button {
     font-size: 20px;
     font-weight: bold;
 }
+hr {
+    border: 1px solid #30363d;
+    margin: 15px 0;
+}
+
+h2 {
+    color: orange;
+    margin-top: 15px;
+}
