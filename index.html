@@ -1,24 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>FG-WHRS Tool</title>
+    <title>FG-WHRS Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>🔥 Flue Gas Heat Recovery Tool</h1>
+<div class="header">
+    🔥 FG-WHRS Pro | Flue Gas Recovery System
+</div>
 
-<div class="container">
-    <input id="T" placeholder="Temperature (K)">
-    <input id="v" placeholder="Velocity (m/s)">
-    <input id="D" placeholder="Diameter (m)">
-    <input id="A" placeholder="Area (m²)">
-    <input id="L" placeholder="Length (m)">
-    <input id="flow_area" placeholder="Flow Area (m²)">
+<div class="main">
 
-    <button onclick="calculate()">Calculate</button>
+    <!-- 左侧控制面板 -->
+    <div class="panel input-panel">
+        <h2>⚙️ Input Parameters</h2>
 
-    <div id="result"></div>
+        <label>Temperature (K)</label>
+        <input id="T">
+
+        <label>Velocity (m/s)</label>
+        <input id="v">
+
+        <label>Diameter (m)</label>
+        <input id="D">
+
+        <label>Heat Area (m²)</label>
+        <input id="A">
+
+        <label>Length (m)</label>
+        <input id="L">
+
+        <label>Flow Area (m²)</label>
+        <input id="flow_area">
+
+        <button onclick="calculate()">Run Simulation</button>
+    </div>
+
+    <!-- 右侧结果面板 -->
+    <div class="panel output-panel">
+        <h2>📊 Results</h2>
+        <div id="result">No data yet</div>
+    </div>
+
 </div>
 
 <script src="script.js"></script>
