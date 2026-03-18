@@ -1,64 +1,91 @@
 body {
     margin: 0;
     font-family: "Segoe UI";
-    background: #1e1e1e;
+    background: #0f1117;
     color: #eee;
 }
 
 .header {
-    background: #111;
+    background: #161b22;
     padding: 15px;
-    font-size: 20px;
+    font-size: 22px;
     text-align: center;
     border-bottom: 2px solid orange;
 }
 
-.main {
+.container {
     display: flex;
-    height: 90vh;
+    height: 92vh;
 }
 
+/* 面板 */
 .panel {
     padding: 20px;
     margin: 10px;
-    border-radius: 10px;
-    background: #2b2b2b;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 12px;
+    background: #161b22;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
 }
 
-.input-panel {
+.left {
     width: 30%;
 }
 
-.output-panel {
+.right {
     width: 70%;
 }
 
+/* 输入 */
 input {
     width: 100%;
+    padding: 10px;
     margin: 8px 0;
-    padding: 8px;
-    background: #111;
+    background: #0f1117;
+    border: 1px solid #30363d;
     color: white;
-    border: 1px solid #444;
+    border-radius: 6px;
 }
 
+/* 按钮 */
 button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 10px;
-    background: orange;
+    background: linear-gradient(90deg, orange, #ff9800);
     border: none;
     color: black;
     font-weight: bold;
+    border-radius: 6px;
     cursor: pointer;
 }
 
 button:hover {
-    background: #ff9800;
+    opacity: 0.85;
 }
 
-h2 {
-    border-bottom: 1px solid #555;
-    padding-bottom: 5px;
+/* 结果卡片 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
 }
+
+.card {
+    background: #0f1117;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border-left: 5px solid orange;
+}
+
+.value {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* 不同类型颜色 */
+.q { border-left-color: orange; }
+.dp { border-left-color: #4fc3f7; }
+.fan { border-left-color: #f06292; }
+.eff { border-left-color: #81c784; }
