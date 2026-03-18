@@ -1,54 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>FG-WHRS Pro</title>
-    <link rel="stylesheet" href="style.css">
-</head>
 <body>
 
 <div class="header">
-    🔥 FG-WHRS Pro System
+    🔥 FG-WHRS Pro | Industrial Simulator
 </div>
 
-<div class="container">
+<div class="layout">
 
-    <!-- 左侧输入 -->
-    <div class="panel left">
-        <h2>⚙️ Input Panel</h2>
+    <!-- 左：控制面板 -->
+    <div class="panel control">
+        <h2>⚙️ Control Panel</h2>
+        <input id="T" placeholder="Temperature (K)" value="400">
+        <input id="v" placeholder="Velocity (m/s)" value="8">
+        <input id="D" placeholder="Diameter (m)" value="0.05">
+        <input id="A" placeholder="Area (m²)" value="20">
+        <input id="L" placeholder="Length (m)" value="10">
+        <input id="flow_area" placeholder="Flow Area (m²)" value="0.5">
 
-        <label>Temperature (K)</label>
-        <input id="T" value="400">
-
-        <label>Velocity (m/s)</label>
-        <input id="v" value="8">
-
-        <label>Diameter (m)</label>
-        <input id="D" value="0.05">
-
-        <label>Heat Area (m²)</label>
-        <input id="A" value="20">
-
-        <label>Length (m)</label>
-        <input id="L" value="10">
-
-        <label>Flow Area (m²)</label>
-        <input id="flow_area" value="0.5">
-
-        <button onclick="calculate()">▶ Run Simulation</button>
+        <button onclick="calculate()">▶ Run</button>
     </div>
 
-    <!-- 右侧结果 -->
-    <div class="panel right">
-        <h2>📊 System Results</h2>
+    <!-- 中：图表 -->
+    <div class="panel chart">
+        <h2>📈 Performance Curve</h2>
+        <canvas id="chart"></canvas>
+    </div>
 
-        <div class="grid" id="result">
-            <!-- 动态生成 -->
-        </div>
+    <!-- 右：结果 -->
+    <div class="panel result">
+        <h2>📊 Key Metrics</h2>
+        <div id="cards"></div>
     </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
 
 </body>
-</html>
