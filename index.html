@@ -1,39 +1,74 @@
-<body>
-
-<div class="header">
-    🔥 FG-WHRS Pro | Industrial Simulator
-</div>
-
 <div class="layout">
 
-    <!-- 左：控制面板 -->
-    <div class="panel control">
-        <h2>⚙️ Control Panel</h2>
-        <input id="T" placeholder="Temperature (K)" value="400">
-        <input id="v" placeholder="Velocity (m/s)" value="8">
-        <input id="D" placeholder="Diameter (m)" value="0.05">
-        <input id="A" placeholder="Area (m²)" value="20">
-        <input id="L" placeholder="Length (m)" value="10">
-        <input id="flow_area" placeholder="Flow Area (m²)" value="0.5">
+<!-- 左侧控制 -->
+<div class="panel control">
 
-        <button onclick="calculate()">▶ Run</button>
-    </div>
+<h2>🔥 Heating System</h2>
 
-    <!-- 中：图表 -->
-    <div class="panel chart">
-        <h2>📈 Performance Curve</h2>
-        <canvas id="chart"></canvas>
-    </div>
+<label>Gas Consumption</label>
+<input id="gas_use">
 
-    <!-- 右：结果 -->
-    <div class="panel result">
-        <h2>📊 Key Metrics</h2>
-        <div id="cards"></div>
-    </div>
+<label>Gas Price</label>
+<input id="gas_price">
+
+<label>Steam Consumption</label>
+<input id="steam_use">
+
+<label>Steam Price</label>
+<input id="steam_price">
+
+<label>Electric Power</label>
+<input id="electric_use">
+
+<label>Electric Price</label>
+<input id="electric_price">
+
+<hr>
+
+<h2>🌬️ Fresh Air</h2>
+
+<input id="fresh_flow" placeholder="Fresh Air Flow">
+<input id="fresh_fan" placeholder="Fan Rated Flow">
+<input id="fresh_temp" placeholder="Fan Temp">
+<input id="fresh_freq" placeholder="Fan Frequency">
+<input id="fresh_in_temp" placeholder="Inlet Temp">
+
+<hr>
+
+<h2>💨 Exhaust Gas</h2>
+
+<input id="exhaust_flow" placeholder="Exhaust Flow">
+<input id="exhaust_fan" placeholder="Fan Rated Flow">
+<input id="exhaust_temp" placeholder="Fan Temp">
+<input id="exhaust_freq" placeholder="Fan Frequency">
+<input id="exhaust_out_temp" placeholder="Outlet Temp">
+
+<input id="humidity" placeholder="Humidity">
+<input id="solvent" placeholder="Solvent Type">
+<input id="concentration" placeholder="Solvent Concentration">
+
+<input id="dust_type" placeholder="Dust Type">
+<input id="dust_size" placeholder="Particle Size">
+
+<hr>
+
+<h2>🏗️ Retrofit Space</h2>
+
+<input id="L_space" placeholder="Length">
+<input id="W_space" placeholder="Width">
+<input id="H_space" placeholder="Height">
+
+<button onclick="calculate()">▶ Run System</button>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="script.js"></script>
+<!-- 右侧结果 -->
+<div class="panel result">
+<h2>📊 System Analysis</h2>
+<div id="cards"></div>
 
-</body>
+<h2>📈 Performance</h2>
+<canvas id="chart"></canvas>
+</div>
+
+</div>
