@@ -1,74 +1,72 @@
 <div class="layout">
 
-<!-- 左侧控制 -->
-<div class="panel control">
+<!-- 左侧 -->
+<div class="sidebar">
 
-<h2>🔥 Heating System</h2>
+<div class="section">
+<h2>🔥 Heating</h2>
+<div class="input-group">
+<input placeholder="Gas">
+<input placeholder="Price">
+</div>
+<div class="input-group">
+<input placeholder="Steam">
+<input placeholder="Price">
+</div>
+<div class="input-group">
+<input placeholder="Electric">
+<input placeholder="Price">
+</div>
+</div>
 
-<label>Gas Consumption</label>
-<input id="gas_use">
-
-<label>Gas Price</label>
-<input id="gas_price">
-
-<label>Steam Consumption</label>
-<input id="steam_use">
-
-<label>Steam Price</label>
-<input id="steam_price">
-
-<label>Electric Power</label>
-<input id="electric_use">
-
-<label>Electric Price</label>
-<input id="electric_price">
-
-<hr>
-
+<div class="section">
 <h2>🌬️ Fresh Air</h2>
+<div class="input-group">
+<input placeholder="Flow">
+<input placeholder="Temp">
+</div>
+<div class="input-group">
+<input placeholder="Freq">
+<input placeholder="Inlet">
+</div>
+</div>
 
-<input id="fresh_flow" placeholder="Fresh Air Flow">
-<input id="fresh_fan" placeholder="Fan Rated Flow">
-<input id="fresh_temp" placeholder="Fan Temp">
-<input id="fresh_freq" placeholder="Fan Frequency">
-<input id="fresh_in_temp" placeholder="Inlet Temp">
+<div class="section">
+<h2>💨 Exhaust</h2>
+<div class="input-group">
+<input placeholder="Flow">
+<input placeholder="Temp">
+</div>
+<div class="input-group">
+<input placeholder="Humidity">
+<input placeholder="VOC">
+</div>
+</div>
 
-<hr>
-
-<h2>💨 Exhaust Gas</h2>
-
-<input id="exhaust_flow" placeholder="Exhaust Flow">
-<input id="exhaust_fan" placeholder="Fan Rated Flow">
-<input id="exhaust_temp" placeholder="Fan Temp">
-<input id="exhaust_freq" placeholder="Fan Frequency">
-<input id="exhaust_out_temp" placeholder="Outlet Temp">
-
-<input id="humidity" placeholder="Humidity">
-<input id="solvent" placeholder="Solvent Type">
-<input id="concentration" placeholder="Solvent Concentration">
-
-<input id="dust_type" placeholder="Dust Type">
-<input id="dust_size" placeholder="Particle Size">
-
-<hr>
-
-<h2>🏗️ Retrofit Space</h2>
-
-<input id="L_space" placeholder="Length">
-<input id="W_space" placeholder="Width">
-<input id="H_space" placeholder="Height">
-
-<button onclick="calculate()">▶ Run System</button>
+<div class="section">
+<h2>🏗️ Space</h2>
+<div class="input-group">
+<input placeholder="L">
+<input placeholder="W">
+<input placeholder="H">
+</div>
+<button onclick="calculate()">▶ Run</button>
+</div>
 
 </div>
 
-<!-- 右侧结果 -->
-<div class="panel result">
-<h2>📊 System Analysis</h2>
-<div id="cards"></div>
+<!-- 右侧 -->
+<div class="main">
 
-<h2>📈 Performance</h2>
+<div class="section">
+<h2>📊 System Metrics</h2>
+<div class="cards" id="cards"></div>
+</div>
+
+<div class="chart-box">
 <canvas id="chart"></canvas>
+</div>
+
 </div>
 
 </div>
