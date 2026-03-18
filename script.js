@@ -66,3 +66,35 @@ function drawChart(x, Q, W){
 function val(id){
     return parseFloat(document.getElementById(id).value);
 }
+
+function calculate(){
+
+    // 🔥 能源成本
+    let gas_cost = val("gas_use") * val("gas_price");
+    let steam_cost = val("steam_use") * val("steam_price");
+    let elec_cost = val("electric_use") * val("electric_price");
+
+    let total_energy_cost = gas_cost + steam_cost + elec_cost;
+
+    // 🌬️ 风机功率（新风 + 尾气）
+    let fresh_power = val("fresh_flow") * val("fresh_freq");
+    let exhaust_power = val("exhaust_flow") * val("exhaust_freq");
+
+    let total_fan = fresh_power + exhaust_power;
+
+    // 🌡️ 余热潜力（简单模型）
+    let heat_recovery = val("exhaust_flow") * (val("exhaust_out_temp") - 300);
+
+    // 🏗️ 空间限制判断
+    let volume = val("L_space") * val("W_space") * val("H_space");
+
+    let feasibility = volume > 10 ? "✅ Feasible" : "❌ Limited Space";
+
+    // 📊 输出
+    document.getElementById("cards").innerHTML = `
+        <div class="card">Energy Cost<div class="value">${total_energy_cost.toFixed(0)}</div></div>
+        <div class="card">Fan Load<div class="value">${total_fan.toFixed(0)}</div></div>
+        <div class="card">Heat Recovery<div class="value">${heat_recovery.toFixed(0)}</div></div>
+        <div class="card">Space Check<div class="value">${feasibility}</div></div>
+    `;
+}
