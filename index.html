@@ -7,40 +7,43 @@
 <body>
 
 <div class="header">
-    🔥 FG-WHRS Pro | Flue Gas Recovery System
+    🔥 FG-WHRS Pro System
 </div>
 
-<div class="main">
+<div class="container">
 
-    <!-- 左侧控制面板 -->
-    <div class="panel input-panel">
-        <h2>⚙️ Input Parameters</h2>
+    <!-- 左侧输入 -->
+    <div class="panel left">
+        <h2>⚙️ Input Panel</h2>
 
         <label>Temperature (K)</label>
-        <input id="T">
+        <input id="T" value="400">
 
         <label>Velocity (m/s)</label>
-        <input id="v">
+        <input id="v" value="8">
 
         <label>Diameter (m)</label>
-        <input id="D">
+        <input id="D" value="0.05">
 
         <label>Heat Area (m²)</label>
-        <input id="A">
+        <input id="A" value="20">
 
         <label>Length (m)</label>
-        <input id="L">
+        <input id="L" value="10">
 
         <label>Flow Area (m²)</label>
-        <input id="flow_area">
+        <input id="flow_area" value="0.5">
 
-        <button onclick="calculate()">Run Simulation</button>
+        <button onclick="calculate()">▶ Run Simulation</button>
     </div>
 
-    <!-- 右侧结果面板 -->
-    <div class="panel output-panel">
-        <h2>📊 Results</h2>
-        <div id="result">No data yet</div>
+    <!-- 右侧结果 -->
+    <div class="panel right">
+        <h2>📊 System Results</h2>
+
+        <div class="grid" id="result">
+            <!-- 动态生成 -->
+        </div>
     </div>
 
 </div>
