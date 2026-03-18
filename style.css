@@ -1,69 +1,109 @@
 body {
     margin: 0;
-    font-family: "Segoe UI";
+    font-family: "Segoe UI", sans-serif;
     background: #0d1117;
     color: #e6edf3;
 }
 
+/* 顶部 */
 .header {
     padding: 15px;
     text-align: center;
     background: #161b22;
-    border-bottom: 2px solid orange;
     font-size: 20px;
+    border-bottom: 2px solid #f39c12;
 }
 
+/* 整体布局 */
 .layout {
     display: grid;
-    grid-template-columns: 300px 1fr 300px;
-    height: 90vh;
+    grid-template-columns: 350px 1fr;
+    height: calc(100vh - 60px);
 }
 
-/* 面板 */
-.panel {
-    margin: 10px;
-    padding: 15px;
+/* 左侧控制 */
+.sidebar {
     background: #161b22;
-    border-radius: 10px;
+    padding: 15px;
+    overflow-y: auto;
 }
 
-/* 输入 */
-input {
-    width: 100%;
-    margin: 8px 0;
-    padding: 10px;
+/* 右侧展示 */
+.main {
+    padding: 15px;
+}
+
+/* 模块卡片 */
+.section {
+    background: #1f2933;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+/* 标题 */
+.section h2 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #f39c12;
+}
+
+/* 输入组 */
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 8px;
     background: #0d1117;
     border: 1px solid #30363d;
     color: white;
+    border-radius: 5px;
 }
 
 /* 按钮 */
 button {
     width: 100%;
     padding: 10px;
-    background: orange;
+    background: linear-gradient(90deg, #f39c12, #ffb74d);
     border: none;
+    border-radius: 6px;
     font-weight: bold;
+    cursor: pointer;
 }
 
-/* 卡片 */
+button:hover {
+    opacity: 0.85;
+}
+
+/* 结果卡片 */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
 .card {
-    background: #0d1117;
-    margin: 10px 0;
-    padding: 10px;
-    border-left: 4px solid orange;
+    background: #161b22;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    border-left: 4px solid #f39c12;
 }
 
-.value {
+.card .value {
     font-size: 20px;
     font-weight: bold;
-}
-hr {
-    border: 1px solid #30363d;
-    margin: 15px 0;
+    margin-top: 5px;
 }
 
-h2 {
-    color: orange;
-    margin-top: 15px;
+/* 图表区 */
+.chart-box {
+    background: #1f2933;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
 }
