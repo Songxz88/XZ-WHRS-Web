@@ -1,59 +1,63 @@
 <div class="container">
 
-    <div class="title">
-        🔥 FG-WHRS Design Tool
-    </div>
+  <div class="header">
+    🔥 FG-WHRS Design Tool
+  </div>
 
-    <!-- 两列卡片 -->
-    <div class="grid">
+  <div class="layout">
 
-        <!-- 左卡片 -->
-        <div class="card">
-            <h2>🌬️ Air & Conditions</h2>
+    <!-- 左侧 -->
+    <div class="panel">
 
-            <div class="row">
-                <label>Fresh Flow</label>
-                <input>
-            </div>
+      <div class="card">
+        <h2>🌬️ Air & Conditions</h2>
 
-            <div class="row">
-                <label>Inlet Temp</label>
-                <input>
-            </div>
-
-            <div class="row">
-                <label>Humidity</label>
-                <input>
-            </div>
-
+        <div class="row">
+          <label>Fresh Flow</label>
+          <input>
         </div>
 
-        <!-- 右卡片 -->
-        <div class="card">
-            <h2>⚙️ Equipment</h2>
-
-            <div class="row">
-                <label>Fan Flow</label>
-                <input>
-            </div>
-
-            <div class="row">
-                <label>Fan Power</label>
-                <input>
-            </div>
-
-            <div class="row">
-                <label>Efficiency</label>
-                <input>
-            </div>
-
+        <div class="row">
+          <label>Inlet Temp</label>
+          <input>
         </div>
 
+        <div class="row">
+          <label>Humidity</label>
+          <input>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>⚙️ Equipment</h2>
+
+        <div class="row">
+          <label>Fan Flow</label>
+          <input>
+        </div>
+
+        <div class="row">
+          <label>Fan Power</label>
+          <input>
+        </div>
+
+        <div class="row">
+          <label>Efficiency</label>
+          <input>
+        </div>
+
+        <button>▶ 开始计算</button>
+
+      </div>
+
     </div>
 
-    <!-- 按钮 -->
-    <div class="actions">
-        <button>开始计算</button>
+    <!-- 右侧 -->
+    <div class="panel result">
+      <h2>📊 Results</h2>
+      <div class="cards"></div>
     </div>
+
+  </div>
 
 </div>
