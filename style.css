@@ -1,91 +1,60 @@
 body {
     margin: 0;
     font-family: "Segoe UI";
-    background: #0f1117;
-    color: #eee;
+    background: #0d1117;
+    color: #e6edf3;
 }
 
 .header {
-    background: #161b22;
     padding: 15px;
-    font-size: 22px;
     text-align: center;
+    background: #161b22;
     border-bottom: 2px solid orange;
+    font-size: 20px;
 }
 
-.container {
-    display: flex;
-    height: 92vh;
+.layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    height: 90vh;
 }
 
 /* 面板 */
 .panel {
-    padding: 20px;
     margin: 10px;
-    border-radius: 12px;
+    padding: 15px;
     background: #161b22;
-    box-shadow: 0 0 15px rgba(0,0,0,0.6);
-}
-
-.left {
-    width: 30%;
-}
-
-.right {
-    width: 70%;
+    border-radius: 10px;
 }
 
 /* 输入 */
 input {
     width: 100%;
-    padding: 10px;
     margin: 8px 0;
-    background: #0f1117;
+    padding: 10px;
+    background: #0d1117;
     border: 1px solid #30363d;
     color: white;
-    border-radius: 6px;
 }
 
 /* 按钮 */
 button {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    background: linear-gradient(90deg, orange, #ff9800);
+    padding: 10px;
+    background: orange;
     border: none;
-    color: black;
     font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
 }
 
-button:hover {
-    opacity: 0.85;
-}
-
-/* 结果卡片 */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-
+/* 卡片 */
 .card {
-    background: #0f1117;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    border-left: 5px solid orange;
+    background: #0d1117;
+    margin: 10px 0;
+    padding: 10px;
+    border-left: 4px solid orange;
 }
 
 .value {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
-    margin-top: 5px;
 }
-
-/* 不同类型颜色 */
-.q { border-left-color: orange; }
-.dp { border-left-color: #4fc3f7; }
-.fan { border-left-color: #f06292; }
-.eff { border-left-color: #81c784; }
