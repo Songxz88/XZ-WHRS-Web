@@ -1,63 +1,1376 @@
-<div class="container">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HeatMasterX · 中低温余热回收能源管理</title>
+<meta name="description" content="HeatMasterX 致力于工业中低温余热回收与能源管理 · 涂装、印染、化工、食品等行业一站式节能解决方案。" />
 
-  <div class="header">
-    🔥 FG-WHRS Design Tool
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+:root{
+  /* light palette */
+  --bg-0:#ffffff;
+  --bg-1:#f7f9fc;
+  --bg-2:#eef2f7;
+  --bg-3:#e3e9f1;
+  --line:#e5eaf0;
+  --line-2:#d3dae3;
+  --ink-0:#0a1628;
+  --ink-1:#2d3a4f;
+  --ink-2:#5a6878;
+  --ink-3:#8995a5;
+  --ink-4:#aeb8c5;
+
+  --brand:#1e56e3;
+  --brand-2:#3b73ee;
+  --brand-soft:#e8efff;
+  --brand-deep:#0a3bbf;
+
+  --heat:#ff6a3d;
+  --heat-2:#ff8a5b;
+  --heat-soft:#fff1ea;
+
+  --eco:#10b981;
+  --eco-2:#34d399;
+  --eco-soft:#e6f7f1;
+
+  --accent:#0a1628;
+
+  --grad-cool: linear-gradient(135deg,#1e56e3 0%, #3b73ee 60%, #4f8cff 100%);
+  --grad-heat: linear-gradient(90deg,#ff4d4d 0%, #ff7a3d 60%, #ffd166 100%);
+  --grad-card: linear-gradient(160deg, rgba(30,86,227,0.05) 0%, rgba(30,86,227,0) 60%);
+
+  --shadow-1: 0 1px 2px rgba(10,22,40,.04), 0 4px 12px rgba(10,22,40,.04);
+  --shadow-2: 0 8px 24px rgba(10,22,40,.06), 0 24px 48px rgba(10,22,40,.06);
+  --shadow-3: 0 24px 60px -20px rgba(30,86,227,.35);
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 24px;
+
+  --serif:"Noto Serif SC", "Songti SC", serif;
+  --sans:"Space Grotesk","Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg-0);
+  color:var(--ink-1);
+  font-family:var(--sans);
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ---------- atmosphere ---------- */
+.bg-grid{
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(30,86,227,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,86,227,.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 60%);
+  z-index:0;pointer-events:none;
+}
+.bg-glow{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 1000px 600px at 80% -10%, rgba(255,106,61,.10), transparent 60%),
+    radial-gradient(ellipse 1200px 700px at 5% 20%, rgba(30,86,227,.08), transparent 60%),
+    radial-gradient(ellipse 800px 500px at 50% 100%, rgba(16,185,129,.05), transparent 60%);
+  z-index:0;pointer-events:none;
+}
+
+main, header, section, footer{position:relative;z-index:2}
+
+/* ---------- nav ---------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 40px;
+  backdrop-filter:saturate(140%) blur(14px);
+  -webkit-backdrop-filter:saturate(140%) blur(14px);
+  background:rgba(255,255,255,.78);
+  border-bottom:1px solid rgba(10,22,40,.05);
+  transition:background .25s, border-color .25s;
+}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink-0);text-decoration:none}
+.brand-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--grad-cool);
+  display:grid;place-items:center;
+  box-shadow:0 6px 18px rgba(30,86,227,.35), inset 0 1px 0 rgba(255,255,255,.3);
+  position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:5px;border-radius:6px;
+  border:1.5px solid rgba(255,255,255,.6);
+  border-top-color:transparent;border-right-color:transparent;
+  animation:spin 6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.brand-name{font-family:var(--sans);font-weight:700;font-size:18px;letter-spacing:-0.02em;color:var(--ink-0)}
+.brand-name em{font-style:italic;color:var(--brand)}
+.brand-sub{font-size:10px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;font-family:var(--mono)}
+
+.nav-menu{display:flex;gap:6px;align-items:center}
+.nav-menu a{
+  color:var(--ink-1);text-decoration:none;font-size:14px;
+  padding:8px 14px;border-radius:8px;transition:all .2s;
+  letter-spacing:.02em;
+}
+.nav-menu a:hover{color:var(--ink-0);background:rgba(10,22,40,.04)}
+.nav-cta{
+  background:var(--ink-0);color:#fff !important;font-weight:500;
+  border:1px solid var(--ink-0);
+}
+.nav-cta:hover{background:var(--brand) !important;border-color:var(--brand)}
+
+/* ---------- hero ---------- */
+.hero{
+  min-height:100vh;
+  padding:140px 40px 80px;
+  display:grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap:60px;
+  align-items:center;
+  max-width:1480px;margin:0 auto;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:6px 14px;border-radius:999px;
+  background:var(--brand-soft);
+  border:1px solid rgba(30,86,227,.18);
+  font-family:var(--mono);font-size:12px;color:var(--brand);
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.hero-tag .dot{width:6px;height:6px;border-radius:50%;background:var(--eco);box-shadow:0 0 8px var(--eco);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.hero h1{
+  font-family:var(--serif);
+  font-size:clamp(44px, 6.2vw, 88px);
+  line-height:1.05;
+  letter-spacing:-0.03em;
+  color:var(--ink-0);
+  font-weight:900;
+  margin:24px 0 28px;
+}
+.hero h1 .accent{
+  background:var(--grad-heat);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-style:italic;
+}
+.hero h1 .underline{
+  position:relative;display:inline-block;
+}
+.hero h1 .underline::after{
+  content:"";position:absolute;left:0;right:0;bottom:6px;height:14px;
+  background:rgba(30,86,227,.15);z-index:-1;border-radius:2px;
+}
+.hero p.lead{
+  font-size:18px;line-height:1.7;color:var(--ink-2);max-width:560px;margin-bottom:36px;
+}
+
+.hero-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px;max-width:560px;
+}
+.hero-stat .v{
+  font-family:var(--mono);font-size:32px;font-weight:700;color:var(--ink-0);
+  letter-spacing:-.02em;
+}
+.hero-stat .v sup{font-size:14px;color:var(--brand);margin-left:2px;font-weight:500}
+.hero-stat .l{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;margin-top:6px;font-family:var(--mono)}
+
+.hero-cta{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 26px;border-radius:10px;
+  font-size:15px;font-weight:500;letter-spacing:.01em;
+  cursor:pointer;border:none;text-decoration:none;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+}
+.btn-primary{
+  background:var(--ink-0);color:#fff;
+  box-shadow:0 8px 20px rgba(10,22,40,.18), inset 0 1px 0 rgba(255,255,255,.1);
+}
+.btn-primary:hover{transform:translateY(-2px);background:var(--brand);box-shadow:0 12px 28px rgba(30,86,227,.4)}
+.btn-ghost{
+  background:#fff;color:var(--ink-0);
+  border:1px solid var(--line-2);
+}
+.btn-ghost:hover{background:var(--bg-1);border-color:var(--ink-3)}
+
+/* ---------- hero visual: energy flow ---------- */
+.hero-visual{
+  position:relative;
+  aspect-ratio: 1/1;
+  max-width:560px;justify-self:end;
+  width:100%;
+}
+.flow-card{
+  position:absolute;inset:0;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:32px;
+  overflow:hidden;
+  box-shadow:var(--shadow-2);
+}
+.flow-card::before{
+  content:"";position:absolute;inset:0;
+  background:var(--grad-card);
+  pointer-events:none;
+}
+.flow-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;position:relative}
+.flow-title{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.18em;text-transform:uppercase}
+.flow-live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--eco)}
+.flow-live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--eco);box-shadow:0 0 8px var(--eco);animation:pulse 1.5s infinite}
+
+.flow-svg{width:100%;height:calc(100% - 60px);position:relative}
+.flow-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;
+  fill:var(--ink-3);
+}
+.flow-temp{
+  font-family:var(--mono);font-size:22px;font-weight:700;
+  letter-spacing:-.02em;
+}
+.flow-stream{
+  stroke-width:6;fill:none;stroke-linecap:round;
+  stroke-dasharray:4 8;
+  animation:flow 1.2s linear infinite;
+}
+@keyframes flow{to{stroke-dashoffset:-12}}
+.flow-stream.heat-in{stroke:var(--heat)}
+.flow-stream.heat-out{stroke:#9aa6b8}
+.flow-stream.air-in{stroke:#9aa6b8}
+.flow-stream.air-out{stroke:var(--heat)}
+
+.flow-core{
+  filter:drop-shadow(0 0 16px rgba(30,86,227,.35));
+}
+
+.metric-strip{
+  position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);
+  display:flex;gap:14px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;padding:14px 22px;
+  box-shadow:var(--shadow-2);
+}
+.metric-strip .m{display:flex;flex-direction:column;align-items:center;gap:2px}
+.metric-strip .m .v{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--ink-0)}
+.metric-strip .m .l{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em}
+.metric-strip .sep{width:1px;background:var(--line)}
+
+/* ---------- generic section ---------- */
+.section{padding:120px 40px;max-width:1480px;margin:0 auto}
+.section.alt{background:var(--bg-1);max-width:none;padding-left:calc((100vw - 1480px)/2 + 40px);padding-right:calc((100vw - 1480px)/2 + 40px)}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;flex-wrap:wrap;gap:20px}
+.section-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.18em;
+  color:var(--brand);text-transform:uppercase;margin-bottom:14px;
+}
+.section-eyebrow::before{content:"";width:30px;height:1px;background:var(--brand)}
+.section h2{
+  font-family:var(--serif);font-size:clamp(32px,4.4vw,56px);
+  line-height:1.1;letter-spacing:-.02em;font-weight:700;color:var(--ink-0);
+  max-width:800px;
+}
+.section h2 em{font-style:italic;color:var(--brand)}
+.section-desc{color:var(--ink-2);font-size:16px;line-height:1.7;max-width:480px}
+
+/* ---------- value props ---------- */
+.values{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+}
+.value{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:32px 28px;
+  position:relative;
+  transition:all .3s;
+  overflow:hidden;
+  box-shadow:var(--shadow-1);
+}
+.value::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--brand), transparent);
+  opacity:0;transition:opacity .3s;
+}
+.value:hover{transform:translateY(-4px);border-color:var(--line-2);box-shadow:var(--shadow-2)}
+.value:hover::before{opacity:1}
+.value-num{
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.18em;margin-bottom:24px;
+}
+.value-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:var(--brand-soft);border:1px solid rgba(30,86,227,.15);
+  display:grid;place-items:center;color:var(--brand);margin-bottom:24px;
+}
+.value h3{
+  font-family:var(--sans);font-size:20px;color:var(--ink-0);font-weight:600;
+  margin-bottom:12px;letter-spacing:-.01em;
+}
+.value p{font-size:14px;line-height:1.7;color:var(--ink-2)}
+
+/* ---------- industries ---------- */
+.industries-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.ind{
+  aspect-ratio:1/1.1;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  cursor:pointer;transition:all .3s;
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow-1);
+}
+.ind::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 100%, rgba(30,86,227,.08), transparent 60%);
+  opacity:0;transition:opacity .3s;
+}
+.ind:hover{transform:translateY(-4px);border-color:var(--brand);box-shadow:var(--shadow-2)}
+.ind:hover::after{opacity:1}
+.ind-icon{font-size:28px}
+.ind-name{font-size:15px;color:var(--ink-0);font-weight:500;line-height:1.3;position:relative}
+.ind-temp{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.05em;position:relative}
+.ind-temp em{color:var(--heat);font-style:normal;font-weight:600}
+
+/* ---------- workflow ---------- */
+.workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
+.workflow::before{
+  content:"";position:absolute;left:5%;right:5%;top:50px;height:1px;
+  background:linear-gradient(90deg, transparent, var(--line-2) 10%, var(--line-2) 90%, transparent);
+}
+.step{position:relative;padding:0 12px;text-align:center}
+.step-circle{
+  width:90px;height:90px;border-radius:50%;
+  background:#fff;border:1px solid var(--line-2);
+  display:grid;place-items:center;
+  margin:0 auto 24px;position:relative;
+  font-family:var(--mono);font-size:24px;color:var(--brand);font-weight:700;
+  transition:all .3s;
+  box-shadow:var(--shadow-1);
+}
+.step-circle::before{
+  content:"";position:absolute;inset:-6px;border-radius:50%;
+  border:1px dashed var(--line-2);
+}
+.step:hover .step-circle{
+  background:var(--brand);color:#fff;border-color:var(--brand);
+  box-shadow:0 0 30px rgba(30,86,227,.35);
+  transform:scale(1.05);
+}
+.step h4{font-size:16px;color:var(--ink-0);font-weight:600;margin-bottom:8px}
+.step p{font-size:13px;color:var(--ink-2);line-height:1.6}
+
+/* ---------- TOOL (the integrated diagnostic) ---------- */
+#tools{padding-top:80px}
+.tool-shell{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:36px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow-2);
+}
+.tool-shell::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--grad-cool);
+}
+.tool-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:28px;flex-wrap:wrap;gap:16px;
+}
+.tool-brand{display:flex;align-items:center;gap:14px}
+.tool-brand .brand-mark{width:42px;height:42px}
+.tool-brand .ttl{font-family:var(--sans);font-weight:700;font-size:18px;color:var(--ink-0)}
+.tool-brand .ttl em{font-style:italic;color:var(--brand)}
+.tool-brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase}
+.tool-actions{display:flex;gap:10px}
+.tool-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:8px;font-size:13px;
+  background:#fff;border:1px solid var(--line-2);
+  color:var(--ink-1);cursor:pointer;transition:all .2s;
+  font-family:var(--sans);
+}
+.tool-btn:hover{background:var(--bg-1);color:var(--ink-0);border-color:var(--ink-3)}
+.tool-btn svg{width:14px;height:14px}
+
+.tool-body{display:grid;grid-template-columns:340px 1fr;gap:32px}
+
+/* form panel */
+.form-panel{display:flex;flex-direction:column;gap:18px}
+.form-step-label{font-size:13px;color:var(--brand);font-weight:500}
+.form-step-label.muted{color:var(--ink-1)}
+.form-step-label .num{font-family:var(--mono);color:var(--brand);margin-right:6px}
+
+.form-select{
+  width:100%;padding:10px 14px;border-radius:8px;
+  background:#fff;border:1px solid var(--line-2);
+  color:var(--ink-0);font-family:var(--sans);font-size:14px;
+  appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6878' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;
+  cursor:pointer;
+}
+.form-select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(30,86,227,.1)}
+
+.energy-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.energy-opt{
+  background:#fff;border:1px solid var(--line-2);border-radius:10px;
+  padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.energy-opt svg{width:22px;height:22px;color:var(--ink-2)}
+.energy-opt span{font-size:12px;color:var(--ink-2)}
+.energy-opt:hover{border-color:var(--ink-3)}
+.energy-opt.active{border-color:var(--brand);background:var(--brand-soft)}
+.energy-opt.active svg, .energy-opt.active span{color:var(--brand)}
+
+.params-title{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-1);margin-top:6px;font-weight:500}
+.params-title svg{width:14px;height:14px;color:var(--brand)}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field-full{grid-column:1/-1}
+.field label{font-size:11px;color:var(--ink-3);font-family:var(--mono);letter-spacing:.05em}
+.field input{
+  padding:9px 12px;border-radius:8px;
+  background:#fff;border:1px solid var(--line-2);
+  color:var(--ink-0);font-family:var(--mono);font-size:14px;font-weight:500;
+}
+.field input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(30,86,227,.1)}
+
+.diag-btn{
+  width:100%;padding:14px;border-radius:10px;
+  background:var(--ink-0);border:1px solid var(--ink-0);
+  color:#fff;font-size:15px;font-weight:500;
+  cursor:pointer;transition:all .2s;margin-top:8px;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:var(--sans);
+}
+.diag-btn:hover{background:var(--brand);border-color:var(--brand);box-shadow:0 8px 20px rgba(30,86,227,.35)}
+.diag-btn svg{width:16px;height:16px}
+
+/* report panel */
+.report-panel{display:flex;flex-direction:column;gap:20px}
+.report-title-bar{
+  background:var(--brand-soft);
+  border-left:4px solid var(--brand);
+  padding:14px 18px;border-radius:6px;
+}
+.report-title-bar h3{
+  font-family:var(--serif);font-size:22px;color:var(--ink-0);
+  font-weight:700;letter-spacing:-.01em;
+}
+.report-title-bar .sub{
+  font-family:var(--mono);font-size:10px;color:var(--ink-3);
+  letter-spacing:.18em;text-transform:uppercase;margin-top:4px;
+}
+
+.flow-sim{
+  background:#0a1628;border:1px solid var(--line);border-radius:12px;
+  padding:22px;position:relative;overflow:hidden;
+}
+.flow-sim-title{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:#8995a5;text-transform:uppercase;margin-bottom:18px}
+.flow-row{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:8px 0}
+.flow-row + .flow-row{margin-top:6px}
+.flow-row .lab{font-size:11px;color:#aeb8c5;text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono)}
+.flow-row .val{font-family:var(--mono);font-weight:700;font-size:18px}
+.flow-row .val.heat-in{color:var(--heat)}
+.flow-row .val.heat-out{color:#4f8cff}
+.flow-row .val.air-in{color:#4f8cff}
+.flow-row .val.air-out{color:#ff4d4d}
+.flow-bar{
+  height:3px;border-radius:2px;position:relative;overflow:hidden;
+}
+.flow-bar.heat{background:linear-gradient(90deg, var(--heat), #4f8cff)}
+.flow-bar.air{background:linear-gradient(90deg, #4f8cff, #ff4d4d)}
+.flow-bar::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.5) 50%, transparent 100%);
+  animation:shimmer 2s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+.kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.kpi{
+  border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;
+}
+.kpi.benefit{background:linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);color:#fff}
+.kpi.payback{background:var(--bg-1);border:1px solid var(--line)}
+.kpi.eco{background:linear-gradient(135deg, var(--eco) 0%, #059669 100%);color:#fff}
+.kpi .lab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);opacity:.85;margin-bottom:6px}
+.kpi .v{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:baseline;gap:4px}
+.kpi .v .unit{font-size:14px;font-weight:500;opacity:.85}
+.kpi.payback .v{color:var(--ink-0)}
+.kpi.payback .lab{color:var(--ink-2)}
+
+.chart-wrap{
+  background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;height:280px;position:relative;
+}
+.chart-wrap .ch-title{
+  position:absolute;top:14px;left:20px;
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase;
+}
+
+/* ---------- case studies ---------- */
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.case{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--radius);padding:28px;
+  position:relative;transition:all .3s;
+  box-shadow:var(--shadow-1);
+}
+.case:hover{transform:translateY(-4px);border-color:var(--line-2);box-shadow:var(--shadow-2)}
+.case-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.case-tag{
+  font-family:var(--mono);font-size:10px;color:var(--brand);
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;
+  background:var(--brand-soft);border:1px solid rgba(30,86,227,.18);
+}
+.case-loc{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.case h4{font-family:var(--serif);font-size:22px;color:var(--ink-0);font-weight:700;line-height:1.3;margin-bottom:14px}
+.case p{font-size:14px;color:var(--ink-2);line-height:1.7;margin-bottom:22px}
+.case-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:22px;border-top:1px dashed var(--line)}
+.cs-item .v{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--brand)}
+.cs-item .l{font-size:10px;color:var(--ink-3);font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+
+/* ---------- about ---------- */
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about p{font-size:16px;line-height:1.8;color:var(--ink-1);margin-bottom:18px}
+.about p strong{color:var(--ink-0);font-weight:600}
+.signature{
+  margin-top:36px;padding-top:24px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;
+}
+.sig-avatar{
+  width:54px;height:54px;border-radius:50%;
+  background:var(--grad-cool);
+  display:grid;place-items:center;color:#fff;font-family:var(--serif);font-weight:700;font-size:22px;
+}
+.sig-info .name{font-family:var(--serif);font-size:18px;color:var(--ink-0);font-weight:700}
+.sig-info .role{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+
+.about-visual{
+  aspect-ratio:1/1;
+  background:#0a1628;
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  position:relative;overflow:hidden;
+  padding:40px;
+  box-shadow:var(--shadow-2);
+}
+.about-visual::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 20%, rgba(30,86,227,.25), transparent 50%);
+}
+.code-snippet{
+  font-family:var(--mono);font-size:12px;line-height:1.9;color:#aeb8c5;
+  white-space:pre-wrap;position:relative;
+}
+.code-snippet .k{color:#4f8cff}
+.code-snippet .s{color:#ff8a5b}
+.code-snippet .n{color:#34d399}
+.code-snippet .c{color:#5a6878;font-style:italic}
+
+/* ---------- cta ---------- */
+.final-cta{
+  background:linear-gradient(135deg, #0a1628 0%, #102542 100%);
+  border-radius:var(--radius-lg);
+  padding:80px 60px;
+  text-align:center;
+  position:relative;overflow:hidden;
+  margin:60px 40px;
+  max-width:1400px;margin-left:auto;margin-right:auto;
+  color:#fff;
+}
+.final-cta::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at center, rgba(30,86,227,.25), transparent 60%);
+}
+.final-cta::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(79,140,255,.6), transparent);
+}
+.final-cta h2{
+  font-family:var(--serif);font-size:clamp(36px,4.4vw,56px);font-weight:700;
+  color:#fff;letter-spacing:-.02em;margin-bottom:20px;position:relative;
+}
+.final-cta h2 em{font-style:italic;color:#4f8cff}
+.final-cta p{font-size:18px;color:#aeb8c5;max-width:620px;margin:0 auto 36px;position:relative;line-height:1.7}
+.final-cta .btn{position:relative}
+.final-cta .btn-primary{background:#fff;color:var(--ink-0)}
+.final-cta .btn-primary:hover{background:var(--brand);color:#fff}
+.final-cta .btn-ghost{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.18)}
+.final-cta .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)}
+
+/* ---------- footer ---------- */
+.footer{
+  border-top:1px solid var(--line);
+  padding:60px 40px 30px;
+  max-width:1480px;margin:0 auto;
+}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:50px}
+.footer-brand p{font-size:13px;color:var(--ink-2);line-height:1.7;margin-top:18px;max-width:320px}
+.footer h5{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;font-family:var(--mono);margin-bottom:18px}
+.footer ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer ul a{color:var(--ink-1);text-decoration:none;font-size:13px;transition:color .2s}
+.footer ul a:hover{color:var(--brand)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:24px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.05em;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px){
+  .hero{grid-template-columns:1fr;gap:40px;padding:120px 24px 60px}
+  .hero-visual{justify-self:center;width:100%}
+  .values{grid-template-columns:repeat(2,1fr)}
+  .industries-grid{grid-template-columns:repeat(3,1fr)}
+  .workflow{grid-template-columns:repeat(2,1fr);gap:40px;margin:40px 0}
+  .workflow::before{display:none}
+  .tool-body{grid-template-columns:1fr}
+  .cases{grid-template-columns:1fr}
+  .about-wrap{grid-template-columns:1fr;gap:40px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .nav-menu{display:none}
+  .section{padding:80px 24px}
+  .section.alt{padding-left:24px;padding-right:24px}
+}
+@media (max-width: 640px){
+  .nav{padding:14px 20px}
+  .hero{padding:110px 20px 40px}
+  .hero-stats{grid-template-columns:1fr 1fr;gap:14px}
+  .values, .industries-grid{grid-template-columns:1fr 1fr}
+  .kpi-row{grid-template-columns:1fr}
+  .field-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:40px}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+  .final-cta{padding:50px 24px;margin:30px 16px}
+  .energy-pick{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <a class="brand" href="#top">
+    <div class="brand-mark">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">Heat<em>Master</em>X</div>
+      <div class="brand-sub">Energy Recovery</div>
+    </div>
+  </a>
+  <div class="nav-menu">
+    <a href="#solutions">解决方案</a>
+    <a href="#industries">服务行业</a>
+    <a href="#workflow">服务流程</a>
+    <a href="#tools">在线诊断</a>
+    <a href="#cases">项目案例</a>
+    <a href="#about">关于我们</a>
+    <a href="#contact" class="nav-cta">免费诊断</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section id="top" class="hero">
+  <div>
+    <div class="hero-tag">
+      <span class="dot"></span>
+      <span>POWERED BY XIZHI SONG ENGINEERING MODEL</span>
+    </div>
+    <h1>
+      让每一度<span class="accent">余热</span>，<br>
+      都<span class="underline">回到生产线</span>。
+    </h1>
+    <p class="lead">
+      HeatMasterX 专注于工业 80℃–300℃ 中低温烟气余热回收。我们用工程模型 + 实时仿真，把传统"白白排掉"的废热，转化为真金白银的节能收益与碳减排。
+    </p>
+    <div class="hero-cta">
+      <a href="#tools" class="btn btn-primary">
+        启动在线诊断
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#solutions" class="btn btn-ghost">
+        了解解决方案
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="v">320<sup>+</sup></div>
+        <div class="l">已交付项目</div>
+      </div>
+      <div class="hero-stat">
+        <div class="v">68<sup>%</sup></div>
+        <div class="l">平均热回收率</div>
+      </div>
+      <div class="hero-stat">
+        <div class="v">1.4<sup>年</sup></div>
+        <div class="l">平均回收周期</div>
+      </div>
+    </div>
   </div>
 
-  <div class="layout">
-
-    <!-- 左侧 -->
-    <div class="panel">
-
-      <div class="card">
-        <h2>🌬️ Air & Conditions</h2>
-
-        <div class="row">
-          <label>Fresh Flow</label>
-          <input>
-        </div>
-
-        <div class="row">
-          <label>Inlet Temp</label>
-          <input>
-        </div>
-
-        <div class="row">
-          <label>Humidity</label>
-          <input>
-        </div>
+  <!-- hero visual: live energy flow -->
+  <div class="hero-visual">
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-title">XIZHI SONG FLOW · LIVE</div>
+        <div class="flow-live">REAL-TIME</div>
       </div>
 
-      <div class="card">
-        <h2>⚙️ Equipment</h2>
+      <svg class="flow-svg" viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="coreGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3b73ee" stop-opacity="1"/>
+            <stop offset="60%" stop-color="#1e56e3" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#0a3bbf" stop-opacity="0.4"/>
+          </radialGradient>
+        </defs>
 
-        <div class="row">
-          <label>Fan Flow</label>
-          <input>
-        </div>
+        <!-- Hot inlet (top-left) -->
+        <text x="20" y="60" class="flow-label">烟气进口 · IN</text>
+        <text x="20" y="90" class="flow-temp" fill="#ff6a3d">160℃</text>
+        <path class="flow-stream heat-in" d="M 30 110 Q 130 110 200 180" />
 
-        <div class="row">
-          <label>Fan Power</label>
-          <input>
-        </div>
+        <!-- Cold outlet (top-right) -->
+        <text x="380" y="60" class="flow-label" text-anchor="end">回收排放 · OUT</text>
+        <text x="380" y="90" class="flow-temp" fill="#1e56e3" text-anchor="end">55℃</text>
+        <path class="flow-stream heat-out" d="M 280 180 Q 380 110 450 110" />
 
-        <div class="row">
-          <label>Efficiency</label>
-          <input>
-        </div>
+        <!-- Air inlet (bottom-left) -->
+        <text x="20" y="350" class="flow-label">新风进口 · IN</text>
+        <text x="20" y="380" class="flow-temp" fill="#1e56e3">15℃</text>
+        <path class="flow-stream air-in" d="M 30 320 Q 130 320 200 250" />
 
-        <button>▶ 开始计算</button>
+        <!-- Preheat outlet (bottom-right) -->
+        <text x="380" y="350" class="flow-label" text-anchor="end">预热送风 · OUT</text>
+        <text x="380" y="380" class="flow-temp" fill="#ff4d4d" text-anchor="end">119℃</text>
+        <path class="flow-stream air-out" d="M 280 250 Q 380 320 450 320" />
 
-      </div>
-
+        <!-- Core exchanger -->
+        <g class="flow-core">
+          <circle cx="240" cy="215" r="58" fill="url(#coreGrad)" />
+          <circle cx="240" cy="215" r="58" fill="none" stroke="#1e56e3" stroke-width="1.5" opacity="0.9"/>
+          <circle cx="240" cy="215" r="44" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.55" stroke-dasharray="3 3"/>
+          <text x="240" y="208" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#fff" font-weight="700" letter-spacing="2">CORE</text>
+          <text x="240" y="226" text-anchor="middle" font-family="JetBrains Mono" font-size="22" fill="#fff" font-weight="700">η 78%</text>
+        </g>
+      </svg>
     </div>
 
-    <!-- 右侧 -->
-    <div class="panel result">
-      <h2>📊 Results</h2>
-      <div class="cards"></div>
+    <div class="metric-strip">
+      <div class="m"><div class="v">¥236<span style="font-size:11px;color:var(--ink-3)">万/年</span></div><div class="l">净收益</div></div>
+      <div class="sep"></div>
+      <div class="m"><div class="v" style="color:var(--eco)">1949<span style="font-size:11px;color:var(--ink-3)">t</span></div><div class="l">CO₂减排</div></div>
+      <div class="sep"></div>
+      <div class="m"><div class="v">0.4<span style="font-size:11px;color:var(--ink-3)">年</span></div><div class="l">回本</div></div>
     </div>
+  </div>
+</section>
 
+<!-- ============ VALUES ============ -->
+<section id="solutions" class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">为什么选择 HeatMasterX</div>
+      <h2>不是供应商，是<em>能源工程伙伴</em></h2>
+    </div>
+    <p class="section-desc">从前期工况诊断、模型仿真，到设备选型、施工调试和运维优化 —— 我们用一套完整的工程方法论，确保每一个余热项目都达成承诺的节能收益。</p>
   </div>
 
-</div>
+  <div class="values">
+    <div class="value">
+      <div class="value-num">/ 01</div>
+      <div class="value-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>
+      </div>
+      <h3>工程模型驱动</h3>
+      <p>基于宋熙智工程模型，结合换热效能-NTU 法 + 实时压降仿真，方案设计阶段即可锁定 ±5% 的热回收量预测精度。</p>
+    </div>
+    <div class="value">
+      <div class="value-num">/ 02</div>
+      <div class="value-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <h3>全栈交付能力</h3>
+      <p>诊断 → 设计 → 制造 → 安装 → 调试 → 运维，单一总包责任主体，避免传统多分包模式中的责任真空与效率损失。</p>
+    </div>
+    <div class="value">
+      <div class="value-num">/ 03</div>
+      <div class="value-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <h3>极速回本周期</h3>
+      <p>典型项目静态回收期 0.8–1.8 年。通过 EMC 合同能源管理模式合作，企业零投资即可启动节能改造。</p>
+    </div>
+    <div class="value">
+      <div class="value-num">/ 04</div>
+      <div class="value-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h3>双碳数据闭环</h3>
+      <p>全程接入数采系统，自动生成符合 ISO 50001、GB/T 23331 标准的节能量审核报告与碳减排核证文件。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INDUSTRIES ============ -->
+<section id="industries" class="section alt">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">服务行业</div>
+      <h2>覆盖 12 个高耗能行业，<em>每一台烟囱都是金矿</em></h2>
+    </div>
+    <p class="section-desc">中低温段 (80℃–300℃) 余热占工业总余热的 60% 以上，却往往是最被忽视的"沉睡资产"。我们专攻这一段。</p>
+  </div>
+
+  <div class="industries-grid">
+    <div class="ind"><div class="ind-icon">🎨</div><div class="ind-name">涂装烤漆<br>烘干室</div><div class="ind-temp"><em>140–180℃</em></div></div>
+    <div class="ind"><div class="ind-icon">🧵</div><div class="ind-name">印染定型<br>排废气</div><div class="ind-temp"><em>120–180℃</em></div></div>
+    <div class="ind"><div class="ind-icon">🍞</div><div class="ind-name">食品烘烤<br>烟道气</div><div class="ind-temp"><em>100–200℃</em></div></div>
+    <div class="ind"><div class="ind-icon">⚗️</div><div class="ind-name">化工反应<br>尾气</div><div class="ind-temp"><em>120–250℃</em></div></div>
+    <div class="ind"><div class="ind-icon">🏭</div><div class="ind-name">锅炉烟气<br>低温段</div><div class="ind-temp"><em>130–220℃</em></div></div>
+    <div class="ind"><div class="ind-icon">📜</div><div class="ind-name">造纸干燥<br>排汽</div><div class="ind-temp"><em>90–140℃</em></div></div>
+    <div class="ind"><div class="ind-icon">🪵</div><div class="ind-name">木业烘干<br>窑炉</div><div class="ind-temp"><em>80–160℃</em></div></div>
+    <div class="ind"><div class="ind-icon">🥛</div><div class="ind-name">乳品喷雾<br>干燥</div><div class="ind-temp"><em>100–180℃</em></div></div>
+    <div class="ind"><div class="ind-icon">⚙️</div><div class="ind-name">压铸熔炉<br>烟气</div><div class="ind-temp"><em>200–300℃</em></div></div>
+    <div class="ind"><div class="ind-icon">🧱</div><div class="ind-name">陶瓷窑炉<br>冷却带</div><div class="ind-temp"><em>150–280℃</em></div></div>
+    <div class="ind"><div class="ind-icon">💊</div><div class="ind-name">医药 GMP<br>烘干线</div><div class="ind-temp"><em>90–160℃</em></div></div>
+    <div class="ind"><div class="ind-icon">🚛</div><div class="ind-name">汽车涂装<br>RTO 后段</div><div class="ind-temp"><em>180–260℃</em></div></div>
+  </div>
+</section>
+
+<!-- ============ WORKFLOW ============ -->
+<section id="workflow" class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">服务流程</div>
+      <h2>5 步交付一个<em>能省钱的能源系统</em></h2>
+    </div>
+  </div>
+
+  <div class="workflow">
+    <div class="step">
+      <div class="step-circle">01</div>
+      <h4>在线诊断</h4>
+      <p>填写工况参数，60 秒生成初步收益评估报告</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">02</div>
+      <h4>现场勘测</h4>
+      <p>专业团队上门测量烟气成分、风量、压降</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">03</div>
+      <h4>方案设计</h4>
+      <p>工程模型仿真出最优换热方案与商业模式</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">04</div>
+      <h4>施工调试</h4>
+      <p>模块化预制，停产时间压缩至 72 小时以内</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">05</div>
+      <h4>持续运维</h4>
+      <p>云端监控 + 季度性能巡检，承诺收益兑付</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOOL (integrated diagnostic) ============ -->
+<section id="tools" class="section alt">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">在线工具 · HeatMasterX 诊断</div>
+      <h2>60 秒，看清你的工厂<em>每年烧掉多少钱</em></h2>
+    </div>
+    <p class="section-desc">输入你的工况参数，系统会基于宋熙智工程模型实时计算热回收量、年节能收益、回收周期与碳减排数据。</p>
+  </div>
+
+  <div class="tool-shell">
+    <div class="tool-header">
+      <div class="tool-brand">
+        <div class="brand-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <div>
+          <div class="ttl">Heat<em>Master</em>X</div>
+          <div class="sub">LEAD DESIGNER: XIZHI SONG</div>
+        </div>
+      </div>
+      <div class="tool-actions">
+        <button class="tool-btn" id="exportBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          导出 PDF 报告
+        </button>
+        <button class="tool-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          工程模式
+        </button>
+      </div>
+    </div>
+
+    <div class="tool-body">
+      <!-- LEFT: form -->
+      <div class="form-panel">
+        <div>
+          <div class="form-step-label"><span class="num">Step 0:</span>快速选择项目行业</div>
+          <select class="form-select" id="industrySelect" style="margin-top:8px">
+            <option value="coating" data-temp="160" data-flow="25000" data-gas="3.5">涂装烤漆 (烘干室)</option>
+            <option value="textile" data-temp="170" data-flow="30000" data-gas="3.5">印染定型机</option>
+            <option value="bakery" data-temp="180" data-flow="15000" data-gas="3.5">食品烘烤烟道</option>
+            <option value="chem" data-temp="220" data-flow="40000" data-gas="3.5">化工反应尾气</option>
+            <option value="boiler" data-temp="180" data-flow="50000" data-gas="3.5">燃气锅炉烟气</option>
+            <option value="paper" data-temp="120" data-flow="35000" data-gas="3.5">造纸干燥排汽</option>
+            <option value="ceramic" data-temp="240" data-flow="28000" data-gas="3.5">陶瓷窑炉冷却</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="form-step-label muted"><span class="num">Step 1:</span>原加热能源</div>
+          <div class="energy-pick">
+            <div class="energy-opt active" data-energy="gas">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+              <span>天然气</span>
+            </div>
+            <div class="energy-opt" data-energy="elec">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>电加热</span>
+            </div>
+            <div class="energy-opt" data-energy="coal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              <span>燃煤/油</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="params-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+          实时工况参数
+        </div>
+
+        <div class="field-grid">
+          <div class="field"><label>烟气入口 (℃)</label><input type="number" id="inT" value="160"></div>
+          <div class="field"><label>进风入口 (℃)</label><input type="number" id="airT" value="15"></div>
+          <div class="field"><label>废气量 (m³/h)</label><input type="number" id="flow" value="25000"></div>
+          <div class="field"><label>项目投资 (万)</label><input type="number" id="capex" value="100"></div>
+          <div class="field"><label>气价 (元/m³)</label><input type="number" id="gasPrice" value="3.5" step="0.1"></div>
+          <div class="field"><label>海拔 (m)</label><input type="number" id="alt" value="0"></div>
+          <div class="field"><label>换热压降 (Pa)</label><input type="number" id="dp" value="350"></div>
+          <div class="field"><label>能源年涨幅(%)</label><input type="number" id="esc" value="3" step="0.5"></div>
+        </div>
+
+        <button class="diag-btn" id="updateBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          更新诊断数据
+        </button>
+      </div>
+
+      <!-- RIGHT: report -->
+      <div class="report-panel">
+        <div class="report-title-bar">
+          <h3 id="reportTitle">涂装烤漆 (烘干室) · 余热回收诊断报告</h3>
+          <div class="sub">POWERED BY XIZHI SONG ENGINEERING MODEL</div>
+        </div>
+
+        <div class="flow-sim">
+          <div class="flow-sim-title">能量平衡仿真 (XIZHI SONG FLOW)</div>
+          <div class="flow-row">
+            <span class="lab">烟气进口</span>
+            <div class="flow-bar heat"></div>
+            <span class="val heat-in" id="simInT">160℃</span>
+          </div>
+          <div class="flow-row">
+            <span class="lab" style="opacity:0">.</span>
+            <div class="flow-bar heat"></div>
+            <span class="val heat-out" id="simOutT">55.6℃</span>
+          </div>
+          <div style="height:14px"></div>
+          <div class="flow-row">
+            <span class="lab">新风入口</span>
+            <div class="flow-bar air"></div>
+            <span class="val air-in" id="simAirT">15℃</span>
+          </div>
+          <div class="flow-row">
+            <span class="lab" style="opacity:0">.</span>
+            <div class="flow-bar air"></div>
+            <span class="val air-out" id="simPreT">119.4℃</span>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi benefit">
+            <div class="lab">年度净收益</div>
+            <div class="v">¥<span id="kpiBenefit">236.2</span><span class="unit">万</span></div>
+          </div>
+          <div class="kpi payback">
+            <div class="lab">静态回收期</div>
+            <div class="v"><span id="kpiPayback">0.4</span><span class="unit">年</span></div>
+          </div>
+          <div class="kpi eco">
+            <div class="lab">年碳减排量</div>
+            <div class="v"><span id="kpiCarbon">1949</span><span class="unit">t</span></div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="ch-title">10 年累计净收益预测 (万元)</div>
+          <canvas id="benefitChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASES ============ -->
+<section id="cases" class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">项目案例</div>
+      <h2>真实场景，真实<em>收益数据</em></h2>
+    </div>
+  </div>
+
+  <div class="cases">
+    <div class="case">
+      <div class="case-meta">
+        <span class="case-tag">汽车涂装</span>
+        <span class="case-loc">江苏 · 无锡</span>
+      </div>
+      <h4>某德系车企涂装车间烤漆烘干余热回收</h4>
+      <p>烟气温度 175℃，6 万 m³/h 风量，原天然气直燃加热。改造后预热新风至 128℃，天然气消耗下降 41%。</p>
+      <div class="case-stats">
+        <div class="cs-item"><div class="v">¥486万</div><div class="l">年节能</div></div>
+        <div class="cs-item"><div class="v">1.1年</div><div class="l">回本</div></div>
+        <div class="cs-item"><div class="v">3270t</div><div class="l">CO₂↓</div></div>
+      </div>
+    </div>
+    <div class="case">
+      <div class="case-meta">
+        <span class="case-tag">印染定型</span>
+        <span class="case-loc">浙江 · 绍兴</span>
+      </div>
+      <h4>某纺织集团 12 台定型机集中余热回收</h4>
+      <p>原排废气 165℃ 直排大气。采用 12 进 1 出集中式换热模块，回收热量用于车间空调与定型机助燃风预热。</p>
+      <div class="case-stats">
+        <div class="cs-item"><div class="v">¥712万</div><div class="l">年节能</div></div>
+        <div class="cs-item"><div class="v">0.9年</div><div class="l">回本</div></div>
+        <div class="cs-item"><div class="v">5840t</div><div class="l">CO₂↓</div></div>
+      </div>
+    </div>
+    <div class="case">
+      <div class="case-meta">
+        <span class="case-tag">化工尾气</span>
+        <span class="case-loc">山东 · 淄博</span>
+      </div>
+      <h4>某精细化工 RTO 后段烟气余热深度利用</h4>
+      <p>RTO 出口烟气 240℃，年运行 8000 小时。采用耐腐蚀不锈钢翅片管换热器,产 0.4MPa 蒸汽并入厂区蒸汽管网。</p>
+      <div class="case-stats">
+        <div class="cs-item"><div class="v">¥894万</div><div class="l">年节能</div></div>
+        <div class="cs-item"><div class="v">1.3年</div><div class="l">回本</div></div>
+        <div class="cs-item"><div class="v">7120t</div><div class="l">CO₂↓</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="section alt">
+  <div class="about-wrap">
+    <div class="about">
+      <div class="section-eyebrow">关于 HeatMasterX</div>
+      <h2 style="margin-bottom:32px">把工程师的<em>工具箱</em>，<br>变成客户的<em>仪表盘</em>。</h2>
+      <p>HeatMasterX 由能源工程师团队于深耕中低温余热领域多年的实战经验中孵化而来。我们坚信：<strong>真正的节能项目，从一份精准的诊断报告开始</strong>。</p>
+      <p>从最初服务于内部设计的 Xizhi Song Engineering Model，到今天成为企业能源管理部门日常使用的诊断工具，我们用一套底层一致的工程模型，连接了商务沟通、方案设计、施工交付与持续运维的全链路。</p>
+      <p>我们承诺：<strong>方案不达预期，差额由我们承担</strong>。这不是口号，是写进每一份合同里的条款。</p>
+
+      <div class="signature">
+        <div class="sig-avatar">宋</div>
+        <div class="sig-info">
+          <div class="name">Xizhi Song · 宋熙智</div>
+          <div class="role">FOUNDER & LEAD DESIGNER</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-visual">
+      <div class="code-snippet"><span class="c"># Xizhi Song Engineering Model · v3.2</span>
+<span class="c"># 中低温余热回收 · 核心算法节选</span>
+
+<span class="k">def</span> <span class="n">recover_heat</span>(flue, fresh, ε):
+    Cp_air   = <span class="s">1.005</span>   <span class="c"># kJ/kg·K</span>
+    ρ_actual = <span class="n">density</span>(flue.T, altitude)
+    ṁ        = flue.flow * ρ_actual / <span class="s">3600</span>
+
+    Q_max = ṁ * Cp_air * (flue.T - fresh.T)
+    Q_rec = ε * Q_max         <span class="c"># 实际回收热量</span>
+
+    T_pre = fresh.T + Q_rec / (ṁ * Cp_air)
+    <span class="k">return</span> {
+        <span class="s">"preheat_T"</span>: T_pre,
+        <span class="s">"saved_kW"</span>:  Q_rec,
+        <span class="s">"η_total"</span>:   ε * <span class="s">0.94</span>,
+        <span class="s">"CO2_kg/h"</span>:  Q_rec * <span class="s">0.234</span>,
+    }
+
+<span class="c"># 部署版本：HeatMasterX Web Dashboard
+# 已服务 320+ 工业场景，累计减碳 47 万吨</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section id="contact">
+  <div class="final-cta">
+    <h2>你的烟囱里，<em>正排着钱</em>。</h2>
+    <p>免费在线诊断 + 免费现场勘测 + EMC 零投资改造模式。<br>给我们 3 分钟，给你 10 年的能源账单优化方案。</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative">
+      <a href="#tools" class="btn btn-primary">立即在线诊断</a>
+      <a href="tel:400-000-0000" class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        400-000-0000
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="#top">
+        <div class="brand-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">Heat<em>Master</em>X</div>
+          <div class="brand-sub">Energy Recovery</div>
+        </div>
+      </a>
+      <p>专注工业中低温余热回收的能源工程伙伴。我们用工程模型，让节能这件事变得可量化、可预测、可兑付。</p>
+    </div>
+    <div>
+      <h5>解决方案</h5>
+      <ul>
+        <li><a href="#industries">涂装烘干</a></li>
+        <li><a href="#industries">印染定型</a></li>
+        <li><a href="#industries">化工尾气</a></li>
+        <li><a href="#industries">锅炉烟气</a></li>
+        <li><a href="#industries">食品烘烤</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>能力中心</h5>
+      <ul>
+        <li><a href="#tools">在线诊断工具</a></li>
+        <li><a href="#workflow">EMC 合同能源管理</a></li>
+        <li><a href="#about">工程模型</a></li>
+        <li><a href="#cases">项目案例</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>联系我们</h5>
+      <ul>
+        <li><a href="tel:400-000-0000">400-000-0000</a></li>
+        <li><a href="mailto:hello@heatmasterx.cn">hello@heatmasterx.cn</a></li>
+        <li><a href="#">江苏省苏州工业园区</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 HeatMasterX · POWERED BY XIZHI SONG ENGINEERING MODEL</div>
+    <div>苏ICP备 2026XXXXXX 号</div>
+  </div>
+</footer>
+
+<script>
+// ========= industry presets =========
+const presets = {
+  coating: {label:"涂装烤漆 (烘干室)", T:160, F:25000, ε:0.78},
+  textile: {label:"印染定型机",       T:170, F:30000, ε:0.75},
+  bakery:  {label:"食品烘烤烟道",     T:180, F:15000, ε:0.72},
+  chem:    {label:"化工反应尾气",     T:220, F:40000, ε:0.70},
+  boiler:  {label:"燃气锅炉烟气",     T:180, F:50000, ε:0.76},
+  paper:   {label:"造纸干燥排汽",     T:120, F:35000, ε:0.65},
+  ceramic: {label:"陶瓷窑炉冷却",     T:240, F:28000, ε:0.74},
+};
+
+const $ = id => document.getElementById(id);
+
+function syncFromIndustry(){
+  const sel = $('industrySelect');
+  const key = sel.value;
+  const p = presets[key];
+  $('inT').value = p.T;
+  $('flow').value = p.F;
+  $('reportTitle').textContent = p.label + ' · 余热回收诊断报告';
+}
+
+$('industrySelect').addEventListener('change', () => {
+  syncFromIndustry();
+  runDiagnostic();
+});
+
+document.querySelectorAll('.energy-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.energy-opt').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    runDiagnostic();
+  });
+});
+
+function diagnose(){
+  const inT     = parseFloat($('inT').value)      || 160;
+  const airT    = parseFloat($('airT').value)     || 15;
+  const flow    = parseFloat($('flow').value)     || 25000;
+  const capex   = parseFloat($('capex').value)    || 100;
+  const gasP    = parseFloat($('gasPrice').value) || 3.5;
+  const alt     = parseFloat($('alt').value)      || 0;
+  const dp      = parseFloat($('dp').value)       || 350;
+  const esc     = parseFloat($('esc').value)      || 3;
+  const indKey  = $('industrySelect').value;
+  const ε       = presets[indKey].ε;
+
+  const ρ_factor = Math.exp(-alt / 8400);
+  const ρ        = 1.293 * ρ_factor * 273 / (273 + inT/2);
+  const ṁ_kgh    = flow * ρ;
+  const Cp       = 1.01;
+
+  const Qmax_kWh  = ṁ_kgh * Cp * (inT - airT) / 3600;
+  const Qrec_kWh  = ε * Qmax_kWh;
+  const Tpre      = airT + (Qrec_kWh * 3600) / (ṁ_kgh * Cp);
+  const Tout      = inT - (Qrec_kWh * 3600) / (ṁ_kgh * Cp);
+
+  const hours = 7200;
+  const energy_kWh_yr = Qrec_kWh * hours;
+  const gas_m3 = energy_kWh_yr / (9.89 * 0.92);
+  const gas_cost = gas_m3 * gasP / 10000;
+
+  const fan_kW = (flow / 3600) * dp / (0.65 * 1000);
+  const elec_cost = fan_kW * hours * 0.7 / 10000;
+
+  const benefit = gas_cost - elec_cost;
+  const payback = capex / benefit;
+  const carbon  = gas_m3 * 2.16 / 1000;
+
+  return {Tpre, Tout, benefit, payback, carbon, esc, capex};
+}
+
+let chart;
+function drawChart(benefit, esc, capex){
+  const ctx = $('benefitChart').getContext('2d');
+  const data = [];
+  let cum = -capex;
+  data.push(cum);
+  for (let i=1;i<=10;i++){
+    cum += benefit * Math.pow(1 + esc/100, i-1);
+    data.push(cum);
+  }
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels:['0','1','2','3','4','5','6','7','8','9','10'],
+      datasets:[{
+        data,
+        borderColor:'#1e56e3',
+        backgroundColor:(c) => {
+          const g = c.chart.ctx.createLinearGradient(0,0,0,260);
+          g.addColorStop(0,'rgba(30,86,227,0.25)');
+          g.addColorStop(1,'rgba(30,86,227,0.00)');
+          return g;
+        },
+        borderWidth:2.5,
+        fill:true,
+        tension:0.25,
+        pointBackgroundColor:'#1e56e3',
+        pointRadius:3,
+        pointHoverRadius:6,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'#0a1628',titleColor:'#fff',bodyColor:'#cdd6e0',
+        borderColor:'#1e56e3',borderWidth:1,padding:10,
+        callbacks:{label:c => `第 ${c.label} 年: ¥${c.parsed.y.toFixed(1)} 万`}
+      }},
+      scales:{
+        x:{
+          grid:{color:'rgba(10,22,40,0.06)'},
+          ticks:{color:'#8995a5',font:{family:'JetBrains Mono',size:11}}
+        },
+        y:{
+          grid:{color:'rgba(10,22,40,0.06)'},
+          ticks:{color:'#8995a5',font:{family:'JetBrains Mono',size:11}}
+        }
+      }
+    }
+  });
+}
+
+function runDiagnostic(){
+  const r = diagnose();
+  $('simInT').textContent  = $('inT').value + '℃';
+  $('simAirT').textContent = $('airT').value + '℃';
+  $('simOutT').textContent = r.Tout.toFixed(1) + '℃';
+  $('simPreT').textContent = r.Tpre.toFixed(1) + '℃';
+  $('kpiBenefit').textContent = r.benefit.toFixed(1);
+  $('kpiPayback').textContent = r.payback.toFixed(1);
+  $('kpiCarbon').textContent  = Math.round(r.carbon);
+  drawChart(r.benefit, r.esc, r.capex);
+}
+
+$('updateBtn').addEventListener('click', runDiagnostic);
+
+$('exportBtn').addEventListener('click', () => {
+  alert('PDF 报告生成功能将在工程师审核完整版本后开放，\n如需立即获取详细报告，请联系我们的工程师团队。\n\n☎️ 400-000-0000');
+});
+
+syncFromIndustry();
+runDiagnostic();
+
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('.nav');
+  if (window.scrollY > 30){
+    nav.style.background = 'rgba(255,255,255,0.92)';
+    nav.style.borderBottomColor = 'rgba(10,22,40,0.08)';
+  } else {
+    nav.style.background = 'rgba(255,255,255,0.78)';
+    nav.style.borderBottomColor = 'rgba(10,22,40,0.05)';
+  }
+});
+</script>
+
+</body>
+</html>
